@@ -75,7 +75,13 @@ Code contributor: Junli Deng, Xueting Yang, Xiaotian Ren
 
 ## Acknowledgments
 
-cvcuda, GFPGAN, CodeFormer
+This project incorporates the following methods:
+
+1. **CVCUDA**: [Project Link](https://github.com/CVCUDA/CV-CUDA)
+
+2. **GFPGAN**: [Project Link](https://github.com/TencentARC/GFPGAN)
+
+3. **CodeFormer**: [Project Link](https://github.com/sczhou/CodeFormer)
 
 
 ## Invitation
