@@ -84,4 +84,4 @@ We invite you to join [Psyche AI Inc](https://www.psyai.com/home) to conduct cut
 
 If you are passionate about working on the forefront of technology and making a difference, we would love to hear from you. Please visit our website at [Psyche AI Inc](https://www.psyai.com/home) to learn more about us and to apply for open positions. You can also contact us by fanzhaoxin@psyai.net.
 
-Let's shape the future together!
+Let's shape the future together!!
