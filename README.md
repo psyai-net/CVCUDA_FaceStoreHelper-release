@@ -9,6 +9,8 @@ CVCUDA version of FaceStoreHelper, suitable for super-resolution, face restorati
 
 This project is designed to extract faces from images, perform image restoration/super-resolution operations, and then merge the restored face back into the original image. The code provides a simple, fast, and accurate method for face extraction and merging back into the original image, suitable for various application scenarios.
 
+We have undertaken a comprehensive rewrite of the original OpenCV implementation, replacing all serial CPU operations with their corresponding CVCUDA operators. This optimization enables our project to leverage the power of GPU acceleration, resulting in significantly improved performance and efficiency in computer vision tasks. By harnessing CVCUDA's capabilities, we have successfully enhanced the processing speed of our application, providing a more responsive and robust user experience.
+
 ## Features
 
 - Widely applicable for post-processing of face image super-resolution/restoration networks, such as GFPGAN and CodeFormer.
@@ -21,6 +23,9 @@ Before running this project, please make sure the following dependencies are ins
 ```bash
 pip install nvcv_python-0.3.1-cp38-cp38-linux_x86_64.whl
 ```
+
+### Downloading pretraining models
+
 
 ### Usage Example
 
