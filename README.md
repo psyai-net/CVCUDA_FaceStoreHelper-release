@@ -17,8 +17,10 @@ This project is designed to extract faces from images, perform image restoration
 
 ### Install Dependencies
 
-Before running this project, please make sure the following dependencies are installed: requirements.txt
-cvcuda
+Before running this project, please make sure the following dependencies are installed:
+```bash
+pip install nvcv_python-0.3.1-cp38-cp38-linux_x86_64.whl
+```
 
 ### Usage Example
 
