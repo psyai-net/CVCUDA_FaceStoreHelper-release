@@ -32,7 +32,7 @@ import cvcuda_utils
 def run_inpainting(imglist):
     # bg_upsampler = set_realesrgan()
     
-    ### 以下代码替换成任笑田加载模型的方式，正脸化不从资源包读取，而是保留实时生成的方式
+    ### 以下代码替换成xiaotian ren加载模型的方式，正脸化不从资源包读取，而是保留实时生成的方式
     bg_upsampler = None
     face_upsampler = None
 
@@ -56,7 +56,7 @@ def run_inpainting(imglist):
     output_imglist = []
     
     
-    ### 以上代码替换成任笑田加载模型的方式，正脸化不从资源包读取，而是保留实时生成的方式
+    ### 以上代码替换成任xiaotian ren加载模型的方式，正脸化不从资源包读取，而是保留实时生成的方式
     
     
     # 通过本地资源包读取人脸正脸化需要的数据
