@@ -67,7 +67,7 @@ This project is licensed under the Creative Commons Attribution-NonCommercial 4.
 
 ## Authors
 
-Deng Junli, Yang Xueting, Ren Xiaotian, Jason Fan Zhaoxin
+Code contributor: Junli Deng, Xueting Yang, Xiaotian Ren
 
 - Contact Author Name: Jason Zhaoxin Fan
 - Contact  Author Email: fanzhaoxin@psyai.net
