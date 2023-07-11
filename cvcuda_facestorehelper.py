@@ -4,14 +4,16 @@ import numpy as np
 import imageio
 import traceback
 import torch
+import argparse
 import pickle
+import glob
 from tqdm import tqdm
 from moviepy.editor import VideoFileClip, AudioFileClip
 
 import config as cfg
 from config import log, params
-from Inference_wav2lip_tools import get_video_frame_list, get_audio_frame_list, load_model, Wav2lip_Dataset
-from Inference_inpainting_tools import set_realesrgan
+
+# from Inference_inpainting_tools import set_realesrgan
 
 from torchvision.transforms.functional import normalize
 from torch.utils.data import Dataset, DataLoader
@@ -30,9 +32,11 @@ import cvcuda_utils
 
 
 def run_inpainting(imglist):
+    log.logger.info("run_inpainting")
+    
     # bg_upsampler = set_realesrgan()
     
-    ### 以下代码替换成xiaotian ren加载模型的方式，正脸化不从资源包读取，而是保留实时生成的方式
+
     bg_upsampler = None
     face_upsampler = None
 
@@ -157,7 +161,7 @@ def run_inpainting(imglist):
     stream = cvcuda.Stream()
     inv_mask = cvcuda.warp_affine_into(src=mask_image_batch,dst=tmpsize,xform=cvcuda_inverse_affine_matrices,flags=cvcuda.Interp.LINEAR,
         border_mode=cvcuda.Border.CONSTANT,border_value=[0],stream=stream)
-    print(time.time() - bbb,'???????????')  # 1 张图片 0.017s
+    # print(time.time() - bbb,'???????????')  # 1 张图片 0.017s
     # for bimg in inv_mask:
     #     test_input_nvcv_tensor = nvcv.as_tensor(bimg)
     erosionmask = nvcv.as_tensor(torch.from_numpy(np.ones((restored_face.shape[0],2), np.int32) * 2).cuda())
@@ -269,8 +273,8 @@ def run_inpainting(imglist):
     
     output_imglist = []
     indx = 0
-    import pdb;pdb.set_trace()
     for bimg, inv_soft_mask_one,past_face_one in zip(parse_mask_image_batch,inv_soft_mask,pasted_face_list):
+        print("111") # 怎么就跑两次？？
         test_input_nvcv_tensor = nvcv.as_tensor(bimg)
         test_input_nvcv_tensor = torch.as_tensor(
                 test_input_nvcv_tensor.cuda(), device="cuda"
@@ -285,8 +289,9 @@ def run_inpainting(imglist):
         inv_soft_mask_one = inv_soft_parse_mask*fuse_mask + inv_soft_mask_one*(1-fuse_mask)
         upsample_img = inv_soft_mask_one * past_face_one.cuda() + (1 - inv_soft_mask_one) * torch.tensor(imglist[indx]).cuda()
         output_img = upsample_img.cpu().numpy().astype(np.uint16)
+        cv2.imwrite('output_img.png', output_img*255)
         indx += 1
-        output_imglist.append()
+        output_imglist.append(output_img)
     # inv_soft_parse_mask = parse_mask[:, :, None]
     # fuse_mask = (inv_soft_parse_mask<inv_soft_mask).astype('int')
     # inv_soft_mask = ne.evaluate('inv_soft_parse_mask*fuse_mask + inv_soft_mask*(1-fuse_mask)')
@@ -296,7 +301,7 @@ def run_inpainting(imglist):
 
 
 
-# 改背景，加logo之类的工作，第一版不用做
+
 def run_postprocessing(imglist, fps, audio_path, save_video_path):
     '''
         后处理：改背景、加logo、拼音频等
@@ -307,54 +312,68 @@ def run_postprocessing(imglist, fps, audio_path, save_video_path):
     '''
     imageio.mimsave(save_video_path, [img[:, :, ::-1] for img in imglist], fps=fps)    # 保存成视频
 
-    # # 也可以通过这种方式保存
-    # with imageio.get_writer(final_output_path, fps=fps) as video:
-    #     for img in imglist:
-    #         video.append_data(img)
+    # # # 也可以通过这种方式保存
+    # # with imageio.get_writer(final_output_path, fps=fps) as video:
+    # #     for img in imglist:
+    # #         video.append_data(img)
+    # video_clip = VideoFileClip(save_video_path)
+    # if audio_path is not None:
+    #     audio_clip = AudioFileClip(audio_path)
+    # else:
+    #     audio_clip = video_clip.audio
+    
 
-    audio_clip = AudioFileClip(audio_path)
-    video_clip = VideoFileClip(save_video_path)
+    # final_clip = video_clip.set_audio(audio_clip)    # 合并
+    # final_output_path = save_video_path[0:-4] + "_add_audio_final.mp4"
+    # final_clip.write_videofile(final_output_path)
 
-    final_clip = video_clip.set_audio(audio_clip)    # 合并
-    final_output_path = save_video_path[0:-4] + "_final.mp4"
-    final_clip.write_videofile(final_output_path)
-
-    return final_output_path
+    # return final_output_path
+    return 0
 
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+
+    parser.add_argument('-i', '--input_path', type=str, default='./testdata/video_based/123.mp4', 
+            help='Input image, video or folder. Default: ./testdata/video_based/123.mp4')
+    
+    parser.add_argument('-o', '--output_path', type=str, default="./results/result.mp4", 
+            help='Output folder. Default: ./results/result.mp4')
+
+    parser.add_argument('-a', '--audio_path', type=str, default=None, 
+        help='Output folder. Default: origin audio')
+
     
     
-    """第二种方式：读取文件夹中的图像文件，生成一个imagelist
-    """
-    # 图片文件夹的路径
-    folder_path = "/path/to/your/folder"
+    args = parser.parse_args()
+    input_video = False
+    if args.input_path.endswith(('jpg', 'jpeg', 'png', 'JPG', 'JPEG', 'PNG')): # input single img path
+        input_img_list = [args.input_path]
+        result_root = f'results/test_img_{w}'
+    elif args.input_path.endswith(('mp4', 'mov', 'avi', 'MP4', 'MOV', 'AVI')): # input video path
+        from basicsr.utils.video_util import VideoReader, VideoWriter
+        input_img_list = []
+        vidreader = VideoReader(args.input_path)
+        image = vidreader.get_frame()
+        while image is not None:
+            input_img_list.append(image)
+            image = vidreader.get_frame()
+        audio = vidreader.get_audio()
+        fps = vidreader.get_fps() # 帧率
+        video_name = os.path.basename(args.input_path)[:-4]
+        # result_root = f'results/{video_name}_{w}'
+        input_video = True
+        vidreader.close()
+    else: # input img folder
+        if args.input_path.endswith('/'):  # solve when path ends with /
+            args.input_path = args.input_path[:-1]
+        # scan all the jpg and png images
+        input_img_list = sorted(glob.glob(os.path.join(args.input_path, '*.[jpJP][pnPN]*[gG]')))
+        # result_root = f'results/{os.path.basename(args.input_path)}_{w}'
 
-    imagelist = []  # 创建一个空的imagelist
-
-    # 遍历文件夹中的图片文件
-    for filename in os.listdir(folder_path):
-        file_path = os.path.join(folder_path, filename)
-        
-        # 使用OpenCV读取图像
-        image = cv2.imread(file_path)
-        
-        if image is not None:
-            # 调整图像大小为512 * 512
-            image = cv2.resize(image, (512, 512))
-            
-            # 将图像转换为numpy数组，并添加到imagelist中
-            image_array = np.array(image)
-            imagelist.append(image_array)
-
-    # 将imagelist转换为numpy数组
-    imagelist = np.array(imagelist)
-
-    # 输出imagelist的形状
-    print(imagelist.shape)
     
     # 图像中拆出人脸--->人脸修复/超分--->人脸拼接回原图操作
-    output_imagelist = run_inpainting(imagelist)
+    output_imagelist = run_inpainting(input_img_list)
     
     # 后处理：将output_imagelist转换为视频
-    run_postprocessing(output_imagelist, fps=25, audio_path="/path/to/your/audio", save_video_path="/path/to/your/video")
+    run_postprocessing(output_imagelist, fps=fps, audio_path=args.audio_path, save_video_path=args.output_path)

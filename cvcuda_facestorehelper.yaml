@@ -1,0 +1,24 @@
+
+# 运行时参数
+app:
+  inpainting:
+    codeformer_checkpoint_path: './checkpoint/codeformer.pth'  
+    face_detection_checkpoint_path: './checkpoint/detection_Resnet50_Final.pth'
+    face_parse_checkpoint_path: './checkpoint/parsing_parsenet.pth'
+    realesrgan_checkpoint_path: './checkpoint/RealESRGAN_x2plus.pth'
+    bg_tile: 400
+    bg_upsampler: 'realesrgan'
+    detection_model: 'retinaface_resnet50'    
+    draw_box: False
+    face_upsample: False
+    fidelity_weight: 0.7
+    has_aligned: False
+    only_center_face: False
+    output_path: None
+    save_video_fps: None
+    suffix: None
+    upscale: 1
+  audio_input_path: './testdata/audio_input/'
+  video_based_path: './testdata/video_based/'
+  final_output_path: './testdata/final_output/'
+  codeformer_source_path: './testdata/video_based/123/'  # 改为你保存资源包的地址
