@@ -26,6 +26,8 @@ pip install nvcv_python-0.3.1-cp38-cp38-linux_x86_64.whl
 
 ### Downloading pretraining models
 
+Only the onnx model is currently supported，we will upload it soon
+
 
 ### Usage Example
 
