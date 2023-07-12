@@ -47,6 +47,12 @@ cd your-repo
 
 3. Run the script:
 
+Generate resource packs that provide codeformer with the necessary face landmarks and affine transformation matrices
+``` shell
+python gen_resource_pkg.py
+```
+
+inference with cvcuda accelerated codeformer network
 ``` shell
 python cvcuda_facestorehelper.py --input_path = your_images_path
 ```
