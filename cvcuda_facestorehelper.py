@@ -291,7 +291,7 @@ def run_inpainting(imglist):
         output_img = upsample_img.cpu().numpy().astype(np.uint16)
         cv2.imwrite('output_img.png', output_img*255)
         indx += 1
-        output_imglist.append(output_img)
+        output_imglist.append(output_img*255)
     # inv_soft_parse_mask = parse_mask[:, :, None]
     # fuse_mask = (inv_soft_parse_mask<inv_soft_mask).astype('int')
     # inv_soft_mask = ne.evaluate('inv_soft_parse_mask*fuse_mask + inv_soft_mask*(1-fuse_mask)')
