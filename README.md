@@ -84,10 +84,7 @@ This project is licensed under the Creative Commons Attribution-NonCommercial 4.
 
 ## Authors
 
-Code contributor: Junli Deng, Xueting Yang, Xiaotian Ren
-[Junli Deng](https://github.com/cucdengjunli)
-[Xueting Yang](https://github.com/yxt7979)
-[Xiaotian Ren](https://github.com/csnowhermit)
+Code contributor: [Junli Deng](https://github.com/cucdengjunli), [Xueting Yang](https://github.com/yxt7979), [Xiaotian Ren](https://github.com/csnowhermit)
 
 
 - Contact Author Name: Jason Zhaoxin Fan
