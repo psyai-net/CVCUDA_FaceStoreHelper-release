@@ -11,7 +11,7 @@ app:
     detection_model: 'retinaface_resnet50'    
     draw_box: False
     face_upsample: False
-    fidelity_weight: 0.7
+    fidelity_weight: 1
     has_aligned: False
     only_center_face: False
     output_path: None
@@ -21,4 +21,4 @@ app:
   audio_input_path: './testdata/audio_input/'
   video_based_path: './testdata/video_based/'
   final_output_path: './testdata/final_output/'
-  codeformer_source_path: './testdata/video_based/123/'  # 改为你保存资源包的地址
+  codeformer_source_path: './testdata/video_based/123/'  # 改为你保存资源包的地址，资源包通过gen_resource_pkg.py生成

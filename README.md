@@ -28,7 +28,9 @@ pip install nvcv_python-0.3.1-cp38-cp38-linux_x86_64.whl
 
 download the checkpoints and put it into ./checkpoint
 link: https://pan.baidu.com/s/1ZPfLnXS5oGDawqualhXCrQ?pwd=psya 
-password: psya 
+password: psya
+
+link: https://drive.google.com/drive/folders/1pwadwZLJt0EQUmjS7u4lUofYiLIfAjGj?usp=sharing
 
 
 ### Usage Example

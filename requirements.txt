@@ -87,3 +87,5 @@ zipp==3.15.0
 numexpr
 jsonpath
 oss2
+ffmpeg-python
+```
