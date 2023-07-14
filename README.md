@@ -9,7 +9,18 @@ CVCUDA version of FaceStoreHelper, suitable for super-resolution, face restorati
 
 This project is designed to extract faces from images, perform image restoration/super-resolution operations, and then merge the restored face back into the original image. The code provides a simple, fast, and accurate method for face extraction and merging back into the original image, suitable for various application scenarios.
 
-We have undertaken a comprehensive rewrite of the original OpenCV implementation, replacing all serial CPU operations with their corresponding CVCUDA operators. This optimization enables our project to leverage the power of GPU acceleration, resulting in significantly improved performance and efficiency in computer vision tasks. By harnessing CVCUDA's capabilities, we have successfully enhanced the processing speed of our application, providing a more responsive and robust user experience.
+We have undertaken a comprehensive **rewrite of the original OpenCV implementation**, **replacing all serial CPU operations** with their corresponding **[CVCUDA operators](https://github.com/CVCUDA/CV-CUDA/blob/release_v0.3.x/DEVELOPER_GUIDE.md)**. This optimization enables our project to leverage the power of GPU acceleration, resulting in significantly improved performance and efficiency in computer vision tasks. By harnessing CVCUDA's capabilities, we have successfully enhanced the processing speed of our application, providing a more responsive and robust user experience.
+
+## update
+
+- [x] python serial version：The blocks are executed sequentially
+- [ ] python Coroutine version: The blocks are executed in parallel，closed source
+- [x] support for [codeformer](https://github.com/sczhou/CodeFormer/blob/master/inference_codeformer.py)
+- [ ] Chinese readme
+- [ ] Integrated Self-developed Lip driving talking head algorithm, closed source
+- [ ] Implementation of cvcuda process of face normalization
+- [x] Put the face back on and morphologically blur the edges
+- [x] cvcuda reconstruction of batch affine transform
 
 ## Features
 
@@ -17,11 +28,61 @@ We have undertaken a comprehensive rewrite of the original OpenCV implementation
 
 ## Quick Start
 
+
 ### Install Dependencies
 
-Before running this project, please make sure the following dependencies are installed:
+Before running this project, please make sure the following CVCUDA are download and installed:
+please refer https://github.com/CVCUDA/CV-CUDA
+
+Configure cvcuda in prebuild mode and download it in the release file 
+https://github.com/CVCUDA/CV-CUDA/tree/dd1b6cae076b0d284e042b3dda42773a5816f1c8
+
+installation example：
 ```bash
 pip install nvcv_python-0.3.1-cp38-cp38-linux_x86_64.whl
+```
+
+Add /your-cvcuda-path to PYTHONPATH in the bashrc file
+```
+export PYTHONPATH=/your-cvcuda-path/CV-CUDA/build-rel/lib/python:$PYTHONPATH
+```
+
+Solution to show so file not found:
+```
+export LD_LIBRARY_PATH=your-path/CV-CUDA/build-rel/lib:$LD_LIBRARY_PATH
+```
+
+
+Install the necessary python packages by executing the following command:
+
+``` shell
+pip install -r requirements.txt
+```
+
+Go to codeformer/ and run the following command to install the basicsr package:
+
+``` shell
+cd ./codeformer/
+python basicsr/setup.py develop
+cd ..
+```
+
+After installing the basicsr package, add the project root directory, and codeformer directory to the system's environment variables:
+
+``` shell
+vim ~/.bashrc
+```
+
+``` 
+export PYTHONPATH=$PYTHONPATH:/path/to/talking_lip:/path/to/talking_lip/codeformer
+```
+
+Note that /path/to/talking_lip is the absolute path of your project in the system.
+
+ Save and exit. Run the following command to make the configuration take effect:
+
+``` shell
+source ~/.bashrc
 ```
 
 ### Downloading pretraining models
@@ -30,7 +91,7 @@ download the checkpoints and put it into ./checkpoint
 link: https://pan.baidu.com/s/1ZPfLnXS5oGDawqualhXCrQ?pwd=psya 
 password: psya
 
-link: https://drive.google.com/drive/folders/1pwadwZLJt0EQUmjS7u4lUofYiLIfAjGj?usp=sharing
+Google drive link: https://drive.google.com/drive/folders/1pwadwZLJt0EQUmjS7u4lUofYiLIfAjGj?usp=sharing
 
 
 ### Usage Example
@@ -51,7 +112,7 @@ cd your-repo
 
 Generate resource packs that provide codeformer with the necessary face landmarks and affine transformation matrices
 
-When you run gen_resource_pkg.py, place a video in the **testdata/video_based** folder to extract the face resource pack.
+When you run gen_resource_pkg.py, place a video in the `testdata/video_based` folder to extract the face resource pack.
 
 ``` shell
 python gen_resource_pkg.py
@@ -62,7 +123,7 @@ inference with cvcuda accelerated codeformer network
 python serial_pipeline.py --input_path = your_video_path
 ```
 
-4. The program will save the images with extracted faces in the specified path and draw the restored faces on the original images.
+4. The program will save `./outlip.mp4` , your video will be enhanced by codeformer, only for face area.
 
 ## Contribution
 
@@ -91,9 +152,9 @@ This project is licensed under the Creative Commons Attribution-NonCommercial 4.
 
 Code contributor: [Junli Deng](https://github.com/cucdengjunli), [Xueting Yang](https://github.com/yxt7979), [Xiaotian Ren](https://github.com/csnowhermit)
 
-
-- Contact Author Name: Jason Zhaoxin Fan
-- Contact  Author Email: fanzhaoxin@psyai.net
+If you would like to work with us further, please contact this guy：
+- Contact Author Name: [Jason Zhaoxin Fan](https://github.com/FANzhaoxin666)
+- Contact Author Email: fanzhaoxin@psyai.net
 - Any other contact information: [psyai.com](https://www.psyai.com/home)
 
 ## Acknowledgments
