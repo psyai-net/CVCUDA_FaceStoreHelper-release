@@ -11,9 +11,7 @@ from config import log, params
 
 
 import subprocess
-
 import config as cfg
-from Inference_wav2lip_tools import  get_audio_frame_list, load_model, Wav2lip_Dataset
 from config import log, params
 from facelib.utils.face_restoration_helper import FaceRestoreHelper
 
